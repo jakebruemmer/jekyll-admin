@@ -27,8 +27,21 @@ module Jekyll
 
         output["raw_content"] = content.to_s
         output["front_matter"] = yaml || {}
+        output["api_url"] = api_url
 
         output.to_h
+      end
+
+      private
+
+      def api_url
+        url = ENV["JEKYLL_ADMIN_BASE_URL"].sub("://127.0.0.1:", "://localhost:")
+        if is_a?(Jekyll::Document)
+          puts collection.label.inspect
+          URI.join(url, "collections/", relative_path[1..-1])
+        else
+          URI.join(url, "pages/", @dir, name)
+        end
       end
     end
   end
